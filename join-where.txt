@@ -1,0 +1,83 @@
+1. Find last names, job identification codes, salaries, department names of the 
+employees
+2. Find last names, job identification codes, salaries, department names of the 
+salesmen (SA at the begining of the job identification code).
+3. Find last names, job identification codes, salaries, department names of the 
+employees from department 50 and 60.
+4. Find employees who work in the location 1700?
+5. What is the highest salary in location 1700?
+6. Find last names and grade levels of the employees.
+7. Find employees who work as a clerk (CLERK somewhere in the job identification code)
+   and belong to grade level B?
+8. Create report that display employees from Shipping department who work longer than 
+   19 years.
+
+
+#1
+SELECT last_name, job_id, salary, d.department_name
+FROM employees e, departments d
+WHERE e.department_id = d.department_id;
+
+#2
+
+SELECT last_name, job_id, salary, d.department_name
+FROM employees e, departments d
+WHERE e.department_id = d.department_id
+    and e.job_id LIKE 'SA%'
+
+#3
+
+SELECT last_name, job_id, salary, d.department_name
+FROM employees e, departments d
+WHERE e.department_id = d.department_id
+    and (e.department_id = 50 or e.department_id = 60) 
+
+SELECT last_name, job_id, salary, d.department_name
+FROM employees e, departments d
+whare e.department_id = d.department_id
+    and (e.department_id in (50,60))
+
+#4
+
+SELECT last_name, l.location_id
+FROM employees e, departments d, locations l
+WHERE e.department_id = d.department_id
+AND d.location_id = l.location_id
+and l.location_id = 1700
+
+#5
+
+SELECT l.location_id, max(salary)
+FROM employees e, departments d, locations l
+WHERE e.department_id = d.department_id
+AND d.location_id = l.location_id
+GROUP BY l.location_id
+HAVING l.location_id = 1700;
+
+SELECT l.location_id, max(salary)
+FROM employees e, departments d, locations l
+WHERE e.department_id = d.department_id
+AND d.location_id = l.location_id
+and l.location_id = 1700
+GROUP BY l.location_id
+
+#6
+
+SELECT last_name, salary, grade_level
+FROM employees, job_grades
+WHERE (salary BETWEEN lowest_sal AND highest_sal);
+
+#7
+SELECT last_name, salary, grade_level
+FROM employees, job_grades
+WHERE (salary BETWEEN lowest_sal AND highest_sal)
+    and grade_level = 'B'
+    and job_id like '%CLERK%'
+
+#8
+SELECT e.last_name, e.hire_date, d.DEPARTMENT_NAME
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN job_history h ON e.employee_id = h.employee_id
+WHERE d.DEPARTMENT_NAME = 'Shipping'
+    AND MONTHS_BETWEEN(h.start_date, h.end_date) / 12 > 19;

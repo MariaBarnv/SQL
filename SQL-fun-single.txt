@@ -1,0 +1,125 @@
+1. Create a query that will return list of all employees. Start from the individual with 
+   the lowest salary
+2. Create a query that will return list of employees from 50th department. Start from 
+   the individual with the highest seniority
+3. Create a query that will return list of all employees. Order them by their job_id. 
+   For each job_id show employees in alphabetical order (by last names). 
+
+4. Display employees last names in three ways: letters in lower case, 
+   in upper case, as they are stored in table
+
+5. For each employee build the code the consists of 2 first letters of the surname,
+   department number and the first letter of job code.
+
+6. Who has the surname that includes letters le at 4th and 5th position?
+
+7. Display the surnames of employees with added (after the name) as many signs '+' as 
+   the many letters include the name.
+
+9. Who has the susrname that constists of more than 4 letters?
+
+10. Display the surnames, salaries of employees from 50th departments.
+    Calculate their Christmas bonuses as 7,5% of salary. The result should be rounded 
+    to whole numbers. 
+11. How many days and days in whole number have the employees worked?  
+    (only employees with SA at the beginning of job code)
+12. How many months and whole months have the employees worked? 
+13. How many years and whole years have the employees worked? 
+14. What was the day of the week when Matos was hired?
+15. What is the day of your life today?
+16. Display the surnames of employees and identification numbers of their managers.
+    For employees who have no manager, display '***'.
+
+#1
+SELECT last_name, first_name, salary 
+FROM employees 
+ORDER BY salary ASC
+
+#2
+SELECT department_id , last_name, HIRE_DATE
+FROM employees
+WHERE department_id = 50
+ORDER BY HIRE_DATE ASC
+
+#3
+SELECT job_id , last_name
+FROM employees
+ORDER BY last_name ASC
+
+#4
+SELECT LOWER (last_name)
+FROM employees
+
+SELECT UPPER (last_name)
+FROM employees
+
+SELECT INITCAP (last_name)
+FROM employees
+
+#5
+SELECT (SUBSTR(LAST_NAME, 1, 2) || NVL(TO_CHAR(DEPARTMENT_ID), 'NULL') || substr(JOB_ID, 1, 1) 
+FROM employees;
+
+SELECT (SUBSTR(LAST_NAME, 1, 2) || DEPARTMENT_ID || JOB_ID) 
+FROM employees;
+
+#6
+SELECT *
+FROM employees
+WHERE SUBSTR(last_name, 4, 2) = 'le';
+
+select * from employees
+where last_name like '___le%
+
+#7
+SELECT RPAD(last_name, (LENGTH(last_name) + LENGTH(first_name)), '+')
+FROM employees
+
+SELECT LAST_NAME || LPAD('+', LENGTH(FIRST_NAME), '+') AS SurnamesPlus
+FROM employees
+
+#9
+select * from employees  
+where LENGTH(last_name) > 4
+
+select * from employees  
+where Like '_____%'
+
+#10
+select last_name, salary, ROUND(salary * 0.075) as Christmas_bonuses
+from employees  
+where department_id = 50
+
+# 11
+select last_name, trunc(SYSDATE - hire_date) AS Days_worked
+from employees  
+where job_id like 'SA%'
+
+#12
+SELECT last_name , MONTHS_BETWEEN(SYSDATE, hire_date), trunc(MONTHS_BETWEEN
+(SYSDATE, hire_date ))
+FROM employees
+
+#13 
+SELECT last_name , MONTHS_BETWEEN(SYSDATE, hire_date) / 12, trunc(MONTHS_BETWEEN
+(SYSDATE, hire_date ) / 12)
+FROM employees
+
+#14
+SELECT last_name, to_char(HIRE_DATE, 'DAY')
+FROM employees
+WHERE last_name = 'Matos'
+
+#15
+SELECT to_date(TO_CHAR(SYSDATE, 'YYYY-MM-DD'), 'YYYY-MM-DD') - (TO_date('2000-02-08', 'YYYY-MM-DD'))
+FROM DUAL;
+
+SELECT SYSDATE - (TO_date('08-feb-2000', 'DD-MM-YYYY'))
+FROM DUAL;
+
+select trunc(sysdate - date'2000-02-08') day_of_life 
+from dual
+
+#16
+SELECT last_name, NVL(TO_CHAR(MANAGER_ID), '***')
+FROM employees

@@ -1,0 +1,36 @@
+1. Display last names and comments on employees seniority:
+   a. for employees hired in 1990 - long term service
+   b. for employees hired in 2000 - mid term service
+   c. for the other employees - ***
+
+#1
+SELECT last_name,
+CASE 
+    WHEN TO_CHAR(hire_date, 'YYYY') = '1990' THEN 'long_term service'
+    when to_char(hire_date, 'YYYY') = '2000' then 'mid term service'
+    ELSE '***'
+END AS Employees_seniority
+FROM employees
+
+SELECT last_name,
+CASE TO_CHAR(hire_date, 'YYYY')
+    WHEN '1990' THEN 'long_term service'
+    when '2000' then 'mid term service'
+    ELSE '***'
+END AS Employees_seniority
+FROM employees
+
+2. Display last names and comments on employees managers:
+   a. for employees with president (ID 100) as direct manager - SMT 
+   b. for lower level employees - their job IDs.
+
+  (SMT=senior management team) 
+
+#2
+
+SELECT last_name,
+CASE 
+    WHEN MANAGER_ID = 100 or EMPLOYEE_ID = 100 THEN 'direct manager - SMT'
+    Else TO_CHAR(JOB_ID)
+END AS employees_managers
+FROM employees

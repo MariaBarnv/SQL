@@ -1,0 +1,101 @@
+1. Find the highest, the lowest, the average salary for all staff members.
+2. Find the highest, the lowest, the average salary for each particular job.
+3. Find the highest, the lowest, the average salary for staff members who work
+   in department 50.
+4. Find the number of employees who work on each position (with the same job_id)?
+5. Find the number of individuals who manage other employees. Analyze the column MANAGER_ID.
+6. Find the values of the lowest salary for staff members who have the same manager.
+7. Find the values of the lowest salary for staff members who have the same manager. 
+   Don't display the unknown manager's group.
+8. Find the values of the lowest salary for staff members who have the same manager. 
+   Don't display the unknown manager's group. 
+   Don't display the lowest salary if it is greater than 10000
+9. What is the diffirence between the highest and the lowest salary?
+10.Find the departments in which the highest salary is greater than 10 000. 
+   Display only these departments that hire more than 2 employees
+11. Find the dates of hiring employees who work for the logest time in each department?
+12. Find the highest managers' salaries (job_id ends with MAN) in each department.
+    Order rows starting from the highest salary.
+13. How many employees were hired in years: 1994, 1995, 1996 
+
+#1
+SELECT last_name, salary
+FROM employees
+WHERE salary = (SELECT MAX(salary) FROM employees)
+   OR salary = (SELECT MIN(salary) FROM employees);
+
+#2
+select * from jobs
+
+SELECT job_id, MAX(salary), min(salary)
+FROM employees
+group by job_id
+
+SELECT jobs.job_id, jobs.JOB_TITLE, MAX(employees.salary) AS max_salary, MIN(employees.salary) AS min_salary
+FROM employees
+JOIN jobs ON jobs.JOB_ID = employees.JOB_ID
+GROUP BY jobs.job_id, jobs.JOB_TITLE;
+
+#3
+SELECT MAX(salary), MIN(salary)
+FROM employees
+WHERE department_id = 50
+
+#4
+select job_id, count(last_name)
+from employees
+group by job_id
+
+#5
+select MANAGER_ID, count(MANAGER_ID)  
+from employees
+group by MANAGER_ID  
+
+select count(distinct  manager_id)
+
+#6
+select MANAGER_ID, min(salary)  
+from employees
+group by MANAGER_ID  
+
+#7
+select MANAGER_ID, min(salary)  
+from employees
+where MANAGER_ID IS NOT NULL
+group by MANAGER_ID 
+
+#8
+SELECT MANAGER_ID, MIN_SALARY
+FROM (
+  SELECT MANAGER_ID, MIN(salary) AS MIN_SALARY
+  FROM employees
+  WHERE MANAGER_ID IS NOT NULL
+  GROUP BY MANAGER_ID)
+WHERE MIN_SALARY < 10000;
+
+#9
+SELECT max(salary) - MIN(salary)
+FROM employees
+
+#10
+select DEPARTMENT_ID, count(LAST_NAME), max(SALARY)
+from employees 
+group by DEPARTMENT_ID
+having count(LAST_NAME) > 2 and max(SALARY) > 10000
+
+#11
+select min(HIRE_DATE), DEPARTMENT_ID 
+from employees  
+group by DEPARTMENT_ID
+
+#12
+select max(SALARY), DEPARTMENT_ID
+FROM employees
+WHERE JOB_ID LIKE '%MAN'
+group by DEPARTMENT_ID
+
+#13
+select count(last_name), DEPARTMENT_ID
+FROM employees
+WHERE TO_CHAR(HIRE_DATE, 'YYYY') = '1994' or TO_CHAR(HIRE_DATE, 'YYYY') = '1995' or TO_CHAR(HIRE_DATE, 'YYYY') = '1996'
+group by DEPARTMENT_ID

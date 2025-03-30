@@ -1,0 +1,21 @@
+1. Who has the last name that consists of 4 letters and starts with "K"?
+2. Create a query that will return employees whose salaries are greater
+    than 5000 and less than 10000
+
+#1 
+SELECT last_name 
+FROM employees 
+WHERE last_name LIKE 'K___'
+
+#2 
+SELECT last_name, first_name, salary 
+FROM employees 
+WHERE salary >= 5000 and  salary <10000
+
+SELECT last_name, first_name, salary 
+FROM employees 
+WHERE salary between 5000 and 10000 
+
+SELECT last_name, first_name, salary 
+FROM employees 
+WHERE salary between 5000.01 and 9999.99

@@ -1,0 +1,33 @@
+1. Find last names, hire dates of employees who work in the same departments as Zlotkey does.
+2. Find the employees from the list found in previous task whose salary is lower than 
+   Zlotkey's salary but were hired before Zlotkey did.
+3. Whose salary is higher than average salary in the company?
+
+#1
+
+select last_name, hire_date, department_id
+from employees
+where department_id = (select department_id
+                        from employees
+                        where last_name = 'Zlotkey')
+
+#2
+
+select last_name, hire_date, department_id
+from employees
+where department_id = (select department_id
+                        from employees
+                        where last_name = 'Zlotkey')
+    and salary > (select salary
+                    from employees
+                    where last_name = 'Zlotkey')
+    and hire_date < (select HIRE_DATE
+                    from employees
+                    where last_name = 'Zlotkey')
+
+#3
+
+select last_name, salary
+from employees
+where salary > (select avg(salary)
+                from employees)
